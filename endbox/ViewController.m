@@ -96,7 +96,7 @@
     NSMutableArray *ld1 = [[NSMutableArray alloc] init];
     NSMutableArray *ld2 = [[NSMutableArray alloc] init];
     for (int i = 0; i < [directoryContents count]; i++) {
-        NSString *str = [[directoryContents objectAtIndex:i] name];
+        NSString *str = [[directoryContents objectAtIndex:i] path];
         //NSRange res = [str rangeOfString:@"."];
   //     if( ![[directoryContents objectAtIndex:i] ])
             [ld1 addObject:str];
