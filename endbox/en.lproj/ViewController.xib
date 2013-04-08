@@ -35,7 +35,7 @@
 			</object>
 			<object class="IBUIView" id="615847272">
 				<reference key="NSNextResponder"/>
-				<int key="NSvFlags">274</int>
+				<int key="NSvFlags">301</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="IBUITableView" id="74454893">
 						<reference key="NSNextResponder" ref="615847272"/>
@@ -78,6 +78,23 @@
 								<int key="IBUIStyle">1</int>
 								<reference key="IBUIToolbar" ref="304266950"/>
 							</object>
+							<object class="IBUIBarButtonItem" id="420558983">
+								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+								<reference key="IBUIToolbar" ref="304266950"/>
+								<int key="IBUISystemItemIdentifier">5</int>
+							</object>
+							<object class="IBUIBarButtonItem" id="692501521">
+								<string key="IBUITitle">Link to DB</string>
+								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+								<int key="IBUIStyle">1</int>
+								<reference key="IBUIToolbar" ref="304266950"/>
+							</object>
+							<object class="IBUIBarButtonItem" id="451360123">
+								<string key="IBUITitle">To DB</string>
+								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+								<int key="IBUIStyle">1</int>
+								<reference key="IBUIToolbar" ref="304266950"/>
+							</object>
 						</array>
 					</object>
 				</array>
@@ -97,7 +114,7 @@
 			</object>
 			<object class="IBUIView" id="247261790">
 				<reference key="NSNextResponder"/>
-				<int key="NSvFlags">274</int>
+				<int key="NSvFlags">301</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="IBUITableView" id="1070439440">
 						<reference key="NSNextResponder" ref="247261790"/>
@@ -152,6 +169,23 @@
 						<array class="NSMutableArray" key="IBUIItems">
 							<object class="IBUIBarButtonItem" id="1043857505">
 								<string key="IBUITitle">Back</string>
+								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+								<int key="IBUIStyle">1</int>
+								<reference key="IBUIToolbar" ref="567611390"/>
+							</object>
+							<object class="IBUIBarButtonItem" id="814805174">
+								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+								<reference key="IBUIToolbar" ref="567611390"/>
+								<int key="IBUISystemItemIdentifier">5</int>
+							</object>
+							<object class="IBUIBarButtonItem" id="595884330">
+								<string key="IBUITitle">Link to DB</string>
+								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+								<int key="IBUIStyle">1</int>
+								<reference key="IBUIToolbar" ref="567611390"/>
+							</object>
+							<object class="IBUIBarButtonItem" id="844535467">
+								<string key="IBUITitle">To DB</string>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<int key="IBUIStyle">1</int>
 								<reference key="IBUIToolbar" ref="567611390"/>
@@ -224,6 +258,30 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">changeBarButton1</string>
+						<reference key="source" ref="372490531"/>
+						<reference key="destination" ref="451360123"/>
+					</object>
+					<int key="connectionID">41</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">changeBarButton2</string>
+						<reference key="source" ref="372490531"/>
+						<reference key="destination" ref="595884330"/>
+					</object>
+					<int key="connectionID">47</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">linkBarButton1</string>
+						<reference key="source" ref="372490531"/>
+						<reference key="destination" ref="692501521"/>
+					</object>
+					<int key="connectionID">49</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
 						<string key="label">dataSource</string>
 						<reference key="source" ref="74454893"/>
 						<reference key="destination" ref="372490531"/>
@@ -286,6 +344,38 @@
 					</object>
 					<int key="connectionID">27</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchEventConnection" key="connection">
+						<string key="label">changeButtonPressed:</string>
+						<reference key="source" ref="451360123"/>
+						<reference key="destination" ref="372490531"/>
+					</object>
+					<int key="connectionID">43</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchEventConnection" key="connection">
+						<string key="label">changeButtonPressed:</string>
+						<reference key="source" ref="844535467"/>
+						<reference key="destination" ref="372490531"/>
+					</object>
+					<int key="connectionID">44</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchEventConnection" key="connection">
+						<string key="label">linkButtonPressed:</string>
+						<reference key="source" ref="692501521"/>
+						<reference key="destination" ref="372490531"/>
+					</object>
+					<int key="connectionID">50</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchEventConnection" key="connection">
+						<string key="label">linkButtonPressed:</string>
+						<reference key="source" ref="595884330"/>
+						<reference key="destination" ref="372490531"/>
+					</object>
+					<int key="connectionID">48</int>
+				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<array key="orderedObjects">
@@ -310,8 +400,8 @@
 						<int key="objectID">8</int>
 						<reference key="object" ref="615847272"/>
 						<array class="NSMutableArray" key="children">
-							<reference ref="304266950"/>
 							<reference ref="74454893"/>
+							<reference ref="304266950"/>
 						</array>
 						<reference key="parent" ref="0"/>
 						<string key="objectName">Portrait</string>
@@ -321,6 +411,9 @@
 						<reference key="object" ref="304266950"/>
 						<array class="NSMutableArray" key="children">
 							<reference ref="148254608"/>
+							<reference ref="451360123"/>
+							<reference ref="420558983"/>
+							<reference ref="692501521"/>
 						</array>
 						<reference key="parent" ref="615847272"/>
 					</object>
@@ -360,12 +453,45 @@
 						<reference key="object" ref="567611390"/>
 						<array class="NSMutableArray" key="children">
 							<reference ref="1043857505"/>
+							<reference ref="844535467"/>
+							<reference ref="814805174"/>
+							<reference ref="595884330"/>
 						</array>
 						<reference key="parent" ref="247261790"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">22</int>
 						<reference key="object" ref="1043857505"/>
+						<reference key="parent" ref="567611390"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">37</int>
+						<reference key="object" ref="451360123"/>
+						<reference key="parent" ref="304266950"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">38</int>
+						<reference key="object" ref="420558983"/>
+						<reference key="parent" ref="304266950"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">39</int>
+						<reference key="object" ref="844535467"/>
+						<reference key="parent" ref="567611390"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">40</int>
+						<reference key="object" ref="814805174"/>
+						<reference key="parent" ref="567611390"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">45</int>
+						<reference key="object" ref="692501521"/>
+						<reference key="parent" ref="304266950"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">46</int>
+						<reference key="object" ref="595884330"/>
 						<reference key="parent" ref="567611390"/>
 					</object>
 				</array>
@@ -382,6 +508,12 @@
 				<string key="17.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="18.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="22.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+				<string key="37.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+				<string key="38.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+				<string key="39.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+				<string key="40.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+				<string key="45.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+				<string key="46.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="8.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="9.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 			</dictionary>
@@ -389,35 +521,63 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">36</int>
+			<int key="maxID">50</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
 				<object class="IBPartialClassDescription">
 					<string key="className">ViewController</string>
 					<string key="superclassName">UIViewController</string>
-					<object class="NSMutableDictionary" key="actions">
-						<string key="NS.key.0">backButtonPressed:</string>
-						<string key="NS.object.0">id</string>
-					</object>
-					<object class="NSMutableDictionary" key="actionInfosByName">
-						<string key="NS.key.0">backButtonPressed:</string>
-						<object class="IBActionInfo" key="NS.object.0">
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="backButtonPressed:">id</string>
+						<string key="changeButtonPressed:">id</string>
+						<string key="linkButtonPressed:">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="backButtonPressed:">
 							<string key="name">backButtonPressed:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-					</object>
+						<object class="IBActionInfo" key="changeButtonPressed:">
+							<string key="name">changeButtonPressed:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="linkButtonPressed:">
+							<string key="name">linkButtonPressed:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="changeBarButton1">UIBarButtonItem</string>
+						<string key="changeBarButton2">UIBarButtonItem</string>
 						<string key="landscape">UIView</string>
+						<string key="linkBarButton1">UIBarButtonItem</string>
+						<string key="linkBarButton2">UIBarButtonItem</string>
 						<string key="portrait">UIView</string>
 						<string key="tableView1">UITableView</string>
 						<string key="tableView2">UITableView</string>
 						<string key="tableView3">UITableView</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="changeBarButton1">
+							<string key="name">changeBarButton1</string>
+							<string key="candidateClassName">UIBarButtonItem</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="changeBarButton2">
+							<string key="name">changeBarButton2</string>
+							<string key="candidateClassName">UIBarButtonItem</string>
+						</object>
 						<object class="IBToOneOutletInfo" key="landscape">
 							<string key="name">landscape</string>
 							<string key="candidateClassName">UIView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="linkBarButton1">
+							<string key="name">linkBarButton1</string>
+							<string key="candidateClassName">UIBarButtonItem</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="linkBarButton2">
+							<string key="name">linkBarButton2</string>
+							<string key="candidateClassName">UIBarButtonItem</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="portrait">
 							<string key="name">portrait</string>

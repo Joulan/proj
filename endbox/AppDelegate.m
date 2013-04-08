@@ -10,37 +10,26 @@
 
 #import "ViewController.h"
 
-#import <DropboxSDK/DropboxSDK.h>
-
 @interface AppDelegate () <DBSessionDelegate, DBNetworkRequestDelegate>
 
 @end
 
 @implementation AppDelegate
 
-@synthesize window = _window;
-@synthesize viewController = _viewController;
+@synthesize window;// = _window;
+@synthesize viewController;// = _viewController;
 @synthesize navigationController;
+@synthesize restClient;
+
 
 - (void)dealloc
 {
-    [_window release];
-    [_viewController release];
+    [window release];
+    [viewController release];
     [navigationController release];
+    [restClient release];
     [super dealloc];
 }
-
-/*
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
-    self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
-    // Override point for customization after application launch.
-    self.viewController = [[[ViewController alloc] initWithNibName:@"ViewController" bundle:nil] autorelease];
-    self.window.rootViewController = self.viewController;
-    [self.window makeKeyAndVisible];
-    return YES;
-}
-*/
 
 #pragma mark -
 #pragma mark Application lifecycle
@@ -48,9 +37,9 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
     
 	// Set these variables before launching the app
-    NSString* appKey = @"APP_KEY";
-	NSString* appSecret = @"APP_SECRET";
-	NSString *root = nil; // Should be set to either kDBRootAppFolder or kDBRootDropbox
+    NSString* appKey = @"mrfhg7sf5xdtqkf";
+	NSString* appSecret = @"dxi2efn7rs2swcj";
+	NSString *root = kDBRootAppFolder; // Should be set to either kDBRootAppFolder or kDBRootDropbox
 	// You can determine if you have App folder access or Full Dropbox along with your consumer key/secret
 	// from https://dropbox.com/developers/apps 
 	
@@ -127,9 +116,133 @@
 		}
 		return YES;
 	}
-	
 	return NO;
 }
+
+- (DBRestClient *)restClient {
+    if (!restClient) {
+        restClient =
+        [[DBRestClient alloc] initWithSession:[DBSession sharedSession]];
+        restClient.delegate = self;
+    }
+    return restClient;
+}
+
+/*      UPLOAD        */
+
+- (void)uploadFile:(NSString *)path Destination:(NSString *)dest {
+    NSString *localPath = path;//[[NSBundle mainBundle] pathForResource:@"Info" ofType:@"plist"];
+    NSString *filename = [path lastPathComponent];
+    NSString *destDir = dest;
+    [[self restClient] uploadFile:filename toPath:destDir
+                    withParentRev:nil fromPath:localPath];
+}
+
+- (void)restClient:(DBRestClient*)client uploadedFile:(NSString*)destPath
+              from:(NSString*)srcPath metadata:(DBMetadata*)metadata {
+    
+    NSLog(@"File uploaded successfully to path: %@", metadata.path);
+}
+
+- (void)restClient:(DBRestClient*)client uploadFileFailedWithError:(NSError*)error {
+    NSLog(@"File upload failed with error - %@", error);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+/*      DOWNLOAD        */
+
+- (void)downloadFile:(NSString *)path Destination:(NSString *)dest {
+    [[self restClient] loadFile:dest intoPath:path];
+}
+
+- (void)restClient:(DBRestClient*)client loadedFile:(NSString*)localPath {
+    NSLog(@"File loaded into path: %@", localPath);
+}
+
+- (void)restClient:(DBRestClient*)client loadFileFailedWithError:(NSError*)error {
+    NSLog(@"There was an error loading the file - %@", error);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+- (void)GetList:(NSString *)path {
+    [[self restClient] loadMetadata:path];
+}
+
+- (void)restClient:(DBRestClient *)client loadedMetadata:(DBMetadata *)metadata {
+    if (metadata.isDirectory) {
+        self.viewController.openedFolder = metadata.path;
+        NSMutableArray *ld1 = [[NSMutableArray alloc] init];
+        NSMutableArray *ld2 = [[NSMutableArray alloc] init];
+        for (DBMetadata *file in metadata.contents) {
+            if(file.isDirectory)
+                [ld1 addObject:file.filename];
+            else
+                [ld2 addObject:file.filename];
+        }
+        self.viewController.listDataOfDirectories = [ld1 copy];
+        self.viewController.listDataOfFiles = ld2;
+        [ld1 addObjectsFromArray:ld2];
+        [ld2 release];
+        self.viewController.listDataOfAll = ld1;
+        [ld1 release];
+        [self.viewController.tableView1 reloadData];
+        [self.viewController.tableView2 reloadData];
+        [self.viewController.tableView3 reloadData];
+    }
+}
+
+- (void)restClient:(DBRestClient *)client
+loadMetadataFailedWithError:(NSError *)error {
+    
+    NSLog(@"Error loading metadata: %@", error);
+}
+
+#pragma mark -
+#pragma mark DBSessionDelegate methods
+
+- (void)sessionDidReceiveAuthorizationFailure:(DBSession*)session userId:(NSString *)userId {
+	relinkUserId = [userId retain];
+	[[[[UIAlertView alloc] 
+	   initWithTitle:@"Dropbox Session Ended" message:@"Do you want to relink?" delegate:self 
+	   cancelButtonTitle:@"Cancel" otherButtonTitles:@"Relink", nil]
+	  autorelease]
+	 show];
+}
+
+
+#pragma mark -
+#pragma mark UIAlertViewDelegate methods
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)index {
+	if (index != alertView.cancelButtonIndex) {
+		[[DBSession sharedSession] linkUserId:relinkUserId fromController:viewController];
+	}
+	[relinkUserId release];
+	relinkUserId = nil;
+}
+
+
+#pragma mark -
+#pragma mark DBNetworkRequestDelegate methods
+
+static int outstandingRequests;
+
+- (void)networkRequestStarted {
+	outstandingRequests++;
+	if (outstandingRequests == 1) {
+		[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+	}
+}
+
+- (void)networkRequestStopped {
+	outstandingRequests--;
+	if (outstandingRequests == 0) {
+		[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+	}
+}
+
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {

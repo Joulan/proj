@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		047CAFAA171311E500391308 /* File.png in Resources */ = {isa = PBXBuildFile; fileRef = 047CAFA6171311E500391308 /* File.png */; };
+		047CAFAB171311E500391308 /* Folder.png in Resources */ = {isa = PBXBuildFile; fileRef = 047CAFA7171311E500391308 /* Folder.png */; };
+		047CAFAC171311E500391308 /* FolderInternet.png in Resources */ = {isa = PBXBuildFile; fileRef = 047CAFA8171311E500391308 /* FolderInternet.png */; };
+		047CAFAD171311E500391308 /* FileLocked.png in Resources */ = {isa = PBXBuildFile; fileRef = 047CAFA9171311E500391308 /* FileLocked.png */; };
 		047FB9DB170F42D500126DBD /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 047FB9DA170F42D500126DBD /* UIKit.framework */; };
 		047FB9DD170F42D500126DBD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 047FB9DC170F42D500126DBD /* Foundation.framework */; };
 		047FB9DF170F42D500126DBD /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 047FB9DE170F42D500126DBD /* CoreGraphics.framework */; };
@@ -21,6 +25,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		047CAFA6171311E500391308 /* File.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = File.png; sourceTree = "<group>"; };
+		047CAFA7171311E500391308 /* Folder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Folder.png; sourceTree = "<group>"; };
+		047CAFA8171311E500391308 /* FolderInternet.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = FolderInternet.png; sourceTree = "<group>"; };
+		047CAFA9171311E500391308 /* FileLocked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = FileLocked.png; sourceTree = "<group>"; };
 		047FB9D6170F42D500126DBD /* endbox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = endbox.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		047FB9DA170F42D500126DBD /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		047FB9DC170F42D500126DBD /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -102,6 +110,10 @@
 		047FB9E1170F42D500126DBD /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				047CAFA6171311E500391308 /* File.png */,
+				047CAFA7171311E500391308 /* Folder.png */,
+				047CAFA8171311E500391308 /* FolderInternet.png */,
+				047CAFA9171311E500391308 /* FileLocked.png */,
 				047FB9E2170F42D500126DBD /* endbox-Info.plist */,
 				047FB9E3170F42D500126DBD /* InfoPlist.strings */,
 				047FB9E6170F42D500126DBD /* main.m */,
@@ -162,6 +174,10 @@
 			files = (
 				047FB9E5170F42D500126DBD /* InfoPlist.strings in Resources */,
 				047FB9F1170F42D600126DBD /* ViewController.xib in Resources */,
+				047CAFAA171311E500391308 /* File.png in Resources */,
+				047CAFAB171311E500391308 /* Folder.png in Resources */,
+				047CAFAC171311E500391308 /* FolderInternet.png in Resources */,
+				047CAFAD171311E500391308 /* FileLocked.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

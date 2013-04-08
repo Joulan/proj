@@ -14,6 +14,10 @@
 @synthesize tableView1;
 @synthesize tableView2;
 @synthesize tableView3;
+@synthesize changeBarButton1;
+@synthesize changeBarButton2;
+@synthesize linkBarButton1;
+@synthesize linkBarButton2;
 @synthesize listDataOfDirectories;
 @synthesize listDataOfFiles;
 @synthesize listDataOfAll;
@@ -21,6 +25,7 @@
 
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration {
+//    CGRect screenRect = [[UIScreen mainScreen] applicationFrame];
     if (interfaceOrientation == UIInterfaceOrientationPortrait) {
         self.view = self.portrait;
         self.view.transform = CGAffineTransformIdentity;
@@ -56,8 +61,10 @@
 
 - (void)viewDidLoad
 {    
-    //get files
-    openedFolder = @"/";//[[NSBundle mainBundle] resourcePath];
+    openedFolder = @"/";
+    isFolIOS = TRUE;
+    self.linkBarButton1.title = self.linkBarButton2.title = ([[DBSession sharedSession] isLinked]) ? @"Unlink DB" : @"Link to DB";
+    self.changeBarButton1.title = self.changeBarButton2.title = (isFolIOS) ? @"To DB" : @"To IOS";
     self.listDataOfDirectories = [self GetListOfDirectories:openedFolder];
     self.listDataOfFiles = [self GetListOfFiles:openedFolder];
     self.listDataOfAll = [self GetListOfAll:openedFolder];
@@ -116,6 +123,8 @@
 - (NSMutableArray*) GetList:(NSString*)path Mode:(NSInteger)mode {
     NSError * error;
     NSURL * url = [[NSURL alloc] initWithString:openedFolder];
+    if(url == nil)
+        return nil;
     NSArray * directoryContents = [ [NSFileManager defaultManager] contentsOfDirectoryAtURL:url includingPropertiesForKeys: [NSArray arrayWithObjects: NSURLCreationDateKey, NSURLNameKey, nil] options:0 error:&error ];
     NSMutableArray *ld1 = [[NSMutableArray alloc] init];
     NSMutableArray *ld2 = [[NSMutableArray alloc] init];
@@ -139,6 +148,17 @@
     [ld1 addObjectsFromArray:ld2];
     [ld2 release];
     return ld1;
+}
+
+- (NSString *)GetContentOfFile:(NSString *)path {
+    NSError *error;
+    NSString *text = [[NSString alloc] initWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&error];
+    return text;
+}
+
+- (void)SetContentOfFile:(NSString *)path Text:(NSString *)txt {
+    NSError *error;
+    [txt writeToFile:path atomically:YES encoding:NSUTF8StringEncoding error:&error];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -183,22 +203,30 @@
     }
     NSUInteger row = [indexPath row];
     if(tableView == self.tableView2) {
-        UIImage *image = [UIImage imageNamed:@"Box.png"];
-        cell.imageView.image = image;
+        cell.imageView.image = [UIImage imageNamed:@"Folder.png"];
         cell.textLabel.text = [self.listDataOfDirectories objectAtIndex:row];
     } else 
+        if([self.listDataOfDirectories containsObject:[self.listDataOfAll objectAtIndex:row]])
+            cell.imageView.image = [UIImage imageNamed:@"Folder.png"];
+        else
+            cell.imageView.image = [UIImage imageNamed:@"File.png"];
         cell.textLabel.text = [self.listDataOfAll objectAtIndex:row];
     
     return cell;
 }
 
 - (void)reloadTables {
-    self.listDataOfDirectories = [self GetListOfDirectories:openedFolder];
-    self.listDataOfFiles = [self GetListOfFiles:openedFolder];
-    self.listDataOfAll = [self GetListOfAll:openedFolder];
-    [tableView1 reloadData];
-    [tableView2 reloadData];
-    [tableView3 reloadData];
+    if (isFolIOS) {
+        self.listDataOfDirectories = [self GetListOfDirectories:openedFolder];
+        self.listDataOfFiles = [self GetListOfFiles:openedFolder];
+        self.listDataOfAll = [self GetListOfAll:openedFolder];
+        [tableView1 reloadData];
+        [tableView2 reloadData];
+        [tableView3 reloadData];
+    } else {
+        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        [appDelegate GetList:openedFolder];
+    }
 }
 
 //will selected table item
@@ -211,8 +239,17 @@
     NSUInteger row = [indexPath row];
     if (tableView == tableView2)
         self.openedFolder = [openedFolder stringByAppendingPathComponent:[self.listDataOfDirectories objectAtIndex:row]];
-    else
-        self.openedFolder = [openedFolder stringByAppendingPathComponent:[self.listDataOfAll objectAtIndex:row]];
+    else {
+        if([self.listDataOfDirectories containsObject:[self.listDataOfAll objectAtIndex:row]])
+            self.openedFolder = [openedFolder stringByAppendingPathComponent:[self.listDataOfAll objectAtIndex:row]];
+        else {
+            NSString *path = [openedFolder stringByAppendingPathComponent:[self.listDataOfAll objectAtIndex:row]];
+            NSString *content = [self GetContentOfFile:path];
+            path = [path stringByDeletingLastPathComponent];
+            path = [path stringByAppendingPathComponent:@"test1.txt"];
+            [self SetContentOfFile:path Text:content];
+        }
+    }
     [self reloadTables];
 }
 
@@ -221,6 +258,24 @@
     [self reloadTables];
 }
 
+- (IBAction)changeButtonPressed:(id)sender {
+    if (![[DBSession sharedSession] isLinked])
+        return;
+    self.openedFolder = @"/";
+    isFolIOS = !isFolIOS;
+    [self reloadTables];
+    if(isFolIOS)
+        self.changeBarButton1.title = self.changeBarButton1.title = @"To DB";
+    else
+        self.changeBarButton1.title = self.changeBarButton1.title = @"To IOS";
+}
 
+- (IBAction)linkButtonPressed:(id)sender {
+    if (![[DBSession sharedSession] isLinked]) {
+        [[DBSession sharedSession] linkFromController:self];
+        self.linkBarButton1.title = self.linkBarButton2.title = @"Unlink to DB";
+    } else 
+        self.linkBarButton1.title = self.linkBarButton2.title = @"Link to DB";
+}
 
 @end
