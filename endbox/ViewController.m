@@ -269,6 +269,8 @@
     [self SetContentOfFile:pth Text:result];
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     [appDelegate uploadFile:pth Destination:dest];
+    NSError *error;
+    [[NSFileManager defaultManager] removeItemAtPath:pth error:&error];
 }
 
 - (IBAction)backButtonPressed:(id)sender {

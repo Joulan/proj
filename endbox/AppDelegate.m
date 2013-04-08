@@ -10,6 +10,9 @@
 
 #import "ViewController.h"
 
+#import "Base64.h"
+
+
 @interface AppDelegate () <DBSessionDelegate, DBNetworkRequestDelegate>
 
 @end
@@ -153,11 +156,18 @@
 /*      DOWNLOAD        */
 
 - (void)downloadFile:(NSString *)path Destination:(NSString *)dest {
-    [[self restClient] loadFile:dest intoPath:path];
+    [[self restClient] loadFile:path intoPath:dest];
 }
 
 - (void)restClient:(DBRestClient*)client loadedFile:(NSString*)localPath {
     NSLog(@"File loaded into path: %@", localPath);
+    NSString *pth = localPath;
+    NSString *content = [self.viewController GetContentOfFile:pth];
+    NSData *datacontent = [Base64 decode:content];
+    pth = [pth substringToIndex:([pth length] - 3)];
+    [datacontent writeToFile:pth atomically:YES];
+    NSError *error;
+    [[NSFileManager defaultManager] removeItemAtPath:localPath error:&error];
 }
 
 - (void)restClient:(DBRestClient*)client loadFileFailedWithError:(NSError*)error {
