@@ -63,4 +63,7 @@
 - (NSString *)GetContentOfFile:(NSString *)path;
 - (void)SetContentOfFile:(NSString *)path Text:(NSString *)txt;
 
+- (void)Downloading:(NSString *)path Destination:(NSString *)dest;
+- (void)Uploading:(NSString *)path Destination:(NSString *)dest;
+
 @end

@@ -7,6 +7,8 @@
 //
 
 #import "ViewController.h"
+#import "Base64.h"
+
 
 @implementation ViewController
 @synthesize landscape;
@@ -244,13 +246,29 @@
             self.openedFolder = [openedFolder stringByAppendingPathComponent:[self.listDataOfAll objectAtIndex:row]];
         else {
             NSString *path = [openedFolder stringByAppendingPathComponent:[self.listDataOfAll objectAtIndex:row]];
-            NSString *content = [self GetContentOfFile:path];
-            path = [path stringByDeletingLastPathComponent];
-            path = [path stringByAppendingPathComponent:@"test1.txt"];
-            [self SetContentOfFile:path Text:content];
+            if(isFolIOS) {
+                [self Uploading:path Destination:@"/"];
+            } else {
+                [self Downloading:path Destination:@"/Users/mac/Desktop/test.txtdbx"];
+            }
         }
     }
     [self reloadTables];
+}
+
+- (void)Downloading:(NSString *)path Destination:(NSString *)dest {
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate downloadFile:path Destination:dest];
+}
+
+- (void)Uploading:(NSString *)path Destination:(NSString *)dest {
+    NSString *pth = path;
+    NSData *datacontent = [[NSData alloc] initWithContentsOfFile:pth];
+    NSString *result = [Base64 encode:datacontent];
+    pth = [pth stringByAppendingString:@"dbx"];
+    [self SetContentOfFile:pth Text:result];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate uploadFile:pth Destination:dest];
 }
 
 - (IBAction)backButtonPressed:(id)sender {
