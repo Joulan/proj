@@ -135,7 +135,7 @@
 
 - (void)uploadFile:(NSString *)path Destination:(NSString *)dest {
     NSString *localPath = path;//[[NSBundle mainBundle] pathForResource:@"Info" ofType:@"plist"];
-    NSString *filename = [path lastPathComponent];
+    NSString *filename = [path lastPathComponent] ;
     NSString *destDir = dest;
     [[self restClient] uploadFile:filename toPath:destDir
                     withParentRev:nil fromPath:localPath];
@@ -145,6 +145,8 @@
               from:(NSString*)srcPath metadata:(DBMetadata*)metadata {
     
     NSLog(@"File uploaded successfully to path: %@", metadata.path);
+    NSError *error;
+    [[NSFileManager defaultManager] removeItemAtPath:srcPath error:&error];
 }
 
 - (void)restClient:(DBRestClient*)client uploadFileFailedWithError:(NSError*)error {

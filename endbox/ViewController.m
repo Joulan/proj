@@ -26,6 +26,7 @@
 @synthesize listDataOfFiles;
 @synthesize listDataOfAll;
 @synthesize openedFolder;
+@synthesize lastpath;
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration {
 //    CGRect screenRect = [[UIScreen mainScreen] applicationFrame];
@@ -66,6 +67,7 @@
 {    
     openedFolder = @"/";
     isFolIOS = TRUE;
+    self.sendBarButton1.enabled = self.sendBarButton2.enabled = isSelecting = FALSE;
     self.linkBarButton1.title = self.linkBarButton2.title = ([[DBSession sharedSession] isLinked]) ? @"Unlink DB" : @"Link to DB";
     self.changeBarButton1.title = self.changeBarButton2.title = (isFolIOS) ? @"To DB" : @"To IOS";
     self.listDataOfDirectories = [self GetListOfDirectories:openedFolder];
@@ -81,10 +83,17 @@
     self.tableView1 = nil;
     self.tableView2 = nil;
     self.tableView3 = nil;
+    self.sendBarButton1 = nil;
+    self.sendBarButton2 = nil;
+    self.linkBarButton1 = nil;
+    self.linkBarButton2 = nil;
+    self.changeBarButton1 = nil;
+    self.changeBarButton2 = nil;
     self.listDataOfDirectories = nil;
     self.listDataOfFiles = nil;
     self.listDataOfAll = nil;
     self.openedFolder = nil;
+    self.lastpath = nil;
     [super viewDidUnload];
 }
 
@@ -94,6 +103,12 @@
     [tableView1 release];
     [tableView2 release];
     [tableView3 release];
+    [sendBarButton1 release];
+    [sendBarButton2 release];
+    [linkBarButton1 release];
+    [linkBarButton2 release];
+    [changeBarButton1 release];
+    [changeBarButton2 release];
     [listDataOfDirectories release];
     [listDataOfFiles release];
     [listDataOfAll release];
@@ -251,6 +266,7 @@
             [self changeButtonPressed:nil];
             self.changeBarButton1.enabled = changeBarButton2.enabled = 
             self.linkBarButton1.enabled = linkBarButton2.enabled = FALSE;
+            self.sendBarButton1.enabled = self.sendBarButton2.enabled = isSelecting = TRUE;
         }
     }
     [self reloadTables];
@@ -263,14 +279,17 @@
 
 - (void)Uploading:(NSString *)path Destination:(NSString *)dest {
     NSString *pth = path;
+    NSString *dst = dest;
+    
     NSData *datacontent = [[NSData alloc] initWithContentsOfFile:pth];
     NSString *result = [Base64 encode:datacontent];
+    
     pth = [pth stringByAppendingString:@"dbx"];
+    //dst = dest;
+    
     [self SetContentOfFile:pth Text:result];
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate uploadFile:pth Destination:dest];
-    NSError *error;
-    [[NSFileManager defaultManager] removeItemAtPath:pth error:&error];
+    [appDelegate uploadFile:pth Destination:dst];
 }
 
 - (IBAction)backButtonPressed:(id)sender {
@@ -300,13 +319,17 @@
 
 - (IBAction)sendButtonPressed:(id)sender {
     if(isSelecting && !isFolIOS) {
-        [self Uploading:lastpath Destination:[openedFolder stringByAppendingPathComponent:[lastpath lastPathComponent]]];
+        [self Uploading:lastpath Destination:openedFolder];
         self.changeBarButton1.enabled = changeBarButton2.enabled = 
         self.linkBarButton1.enabled = linkBarButton2.enabled = TRUE;
+        self.sendBarButton1.enabled = self.sendBarButton2.enabled = isSelecting = FALSE;
+        //[self reloadTables];
     } else if (isSelecting && isFolIOS) {
         [self Downloading:lastpath Destination:[openedFolder stringByAppendingPathComponent:[lastpath lastPathComponent]]];
         self.changeBarButton1.enabled = changeBarButton2.enabled = 
         self.linkBarButton1.enabled = linkBarButton2.enabled = TRUE;
+        self.sendBarButton1.enabled = self.sendBarButton2.enabled = isSelecting = FALSE;
+        //[self reloadTables];
     }
 }
 

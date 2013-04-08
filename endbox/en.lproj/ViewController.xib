@@ -78,6 +78,12 @@
 								<int key="IBUIStyle">1</int>
 								<reference key="IBUIToolbar" ref="304266950"/>
 							</object>
+							<object class="IBUIBarButtonItem" id="939886784">
+								<string key="IBUITitle">Send</string>
+								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+								<int key="IBUIStyle">1</int>
+								<reference key="IBUIToolbar" ref="304266950"/>
+							</object>
 							<object class="IBUIBarButtonItem" id="420558983">
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<reference key="IBUIToolbar" ref="304266950"/>
@@ -169,6 +175,12 @@
 						<array class="NSMutableArray" key="IBUIItems">
 							<object class="IBUIBarButtonItem" id="1043857505">
 								<string key="IBUITitle">Back</string>
+								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+								<int key="IBUIStyle">1</int>
+								<reference key="IBUIToolbar" ref="567611390"/>
+							</object>
+							<object class="IBUIBarButtonItem" id="312289989">
+								<string key="IBUITitle">Send</string>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<int key="IBUIStyle">1</int>
 								<reference key="IBUIToolbar" ref="567611390"/>
@@ -282,6 +294,22 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">sendBarButton2</string>
+						<reference key="source" ref="372490531"/>
+						<reference key="destination" ref="312289989"/>
+					</object>
+					<int key="connectionID">54</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">sendBarButton1</string>
+						<reference key="source" ref="372490531"/>
+						<reference key="destination" ref="939886784"/>
+					</object>
+					<int key="connectionID">56</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
 						<string key="label">dataSource</string>
 						<reference key="source" ref="74454893"/>
 						<reference key="destination" ref="372490531"/>
@@ -376,6 +404,22 @@
 					</object>
 					<int key="connectionID">48</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchEventConnection" key="connection">
+						<string key="label">sendButtonPressed:</string>
+						<reference key="source" ref="939886784"/>
+						<reference key="destination" ref="372490531"/>
+					</object>
+					<int key="connectionID">55</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchEventConnection" key="connection">
+						<string key="label">sendButtonPressed:</string>
+						<reference key="source" ref="312289989"/>
+						<reference key="destination" ref="372490531"/>
+					</object>
+					<int key="connectionID">53</int>
+				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<array key="orderedObjects">
@@ -414,6 +458,7 @@
 							<reference ref="451360123"/>
 							<reference ref="420558983"/>
 							<reference ref="692501521"/>
+							<reference ref="939886784"/>
 						</array>
 						<reference key="parent" ref="615847272"/>
 					</object>
@@ -456,6 +501,7 @@
 							<reference ref="844535467"/>
 							<reference ref="814805174"/>
 							<reference ref="595884330"/>
+							<reference ref="312289989"/>
 						</array>
 						<reference key="parent" ref="247261790"/>
 					</object>
@@ -494,6 +540,16 @@
 						<reference key="object" ref="595884330"/>
 						<reference key="parent" ref="567611390"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">51</int>
+						<reference key="object" ref="939886784"/>
+						<reference key="parent" ref="304266950"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">52</int>
+						<reference key="object" ref="312289989"/>
+						<reference key="parent" ref="567611390"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -514,6 +570,8 @@
 				<string key="40.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="45.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="46.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+				<string key="51.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+				<string key="52.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="8.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="9.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 			</dictionary>
@@ -521,7 +579,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">50</int>
+			<int key="maxID">56</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -532,6 +590,7 @@
 						<string key="backButtonPressed:">id</string>
 						<string key="changeButtonPressed:">id</string>
 						<string key="linkButtonPressed:">id</string>
+						<string key="sendButtonPressed:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
 						<object class="IBActionInfo" key="backButtonPressed:">
@@ -546,6 +605,10 @@
 							<string key="name">linkButtonPressed:</string>
 							<string key="candidateClassName">id</string>
 						</object>
+						<object class="IBActionInfo" key="sendButtonPressed:">
+							<string key="name">sendButtonPressed:</string>
+							<string key="candidateClassName">id</string>
+						</object>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="changeBarButton1">UIBarButtonItem</string>
@@ -554,6 +617,8 @@
 						<string key="linkBarButton1">UIBarButtonItem</string>
 						<string key="linkBarButton2">UIBarButtonItem</string>
 						<string key="portrait">UIView</string>
+						<string key="sendBarButton1">UIBarButtonItem</string>
+						<string key="sendBarButton2">UIBarButtonItem</string>
 						<string key="tableView1">UITableView</string>
 						<string key="tableView2">UITableView</string>
 						<string key="tableView3">UITableView</string>
@@ -582,6 +647,14 @@
 						<object class="IBToOneOutletInfo" key="portrait">
 							<string key="name">portrait</string>
 							<string key="candidateClassName">UIView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="sendBarButton1">
+							<string key="name">sendBarButton1</string>
+							<string key="candidateClassName">UIBarButtonItem</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="sendBarButton2">
+							<string key="name">sendBarButton2</string>
+							<string key="candidateClassName">UIBarButtonItem</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="tableView1">
 							<string key="name">tableView1</string>
