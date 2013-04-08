@@ -20,8 +20,9 @@
     UITableView *tableView2;
     UITableView *tableView3;
     
-    NSArray *listData1;
-    NSArray *listData2;
+    NSArray *listDataOfDirectories;
+    NSArray *listDataOfFiles;
+    NSArray *listDataOfAll;
     
     NSString *openedFolder;
     
@@ -32,9 +33,16 @@
 @property (nonatomic, retain) IBOutlet UITableView *tableView1;
 @property (nonatomic, retain) IBOutlet UITableView *tableView2;
 @property (nonatomic, retain) IBOutlet UITableView *tableView3;
-@property (nonatomic, retain) NSArray *listData1;
-@property (nonatomic, retain) NSArray *listData2;
+@property (nonatomic, retain) NSArray *listDataOfDirectories;
+@property (nonatomic, retain) NSArray *listDataOfFiles;
+@property (nonatomic, retain) NSArray *listDataOfAll;
 @property (nonatomic, retain) NSString *openedFolder;
+
 - (IBAction)backButtonPressed:(id)sender;
+
+- (NSArray*) GetListOfDirectories:(NSString*)path;
+- (NSArray*) GetListOfFiles:(NSString*)path;- (NSArray*) GetListOfAll:(NSString*)path;
+- (NSMutableArray*) GetList:(NSString*)path Mode:(NSInteger)mode;
+- (void)reloadTables;
 
 @end

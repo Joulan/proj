@@ -10,10 +10,16 @@
 
 @class ViewController;
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate> {
+    UINavigationController *navigationController;
+    ViewController *viewController;
+	NSString *relinkUserId;
+}
 
 @property (strong, nonatomic) UIWindow *window;
 
 @property (strong, nonatomic) ViewController *viewController;
+
+@property (nonatomic, retain) UINavigationController *navigationController;
 
 @end

@@ -14,8 +14,9 @@
 @synthesize tableView1;
 @synthesize tableView2;
 @synthesize tableView3;
-@synthesize listData1;
-@synthesize listData2;
+@synthesize listDataOfDirectories;
+@synthesize listDataOfFiles;
+@synthesize listDataOfAll;
 @synthesize openedFolder;
 
 
@@ -57,7 +58,9 @@
 {    
     //get files
     openedFolder = @"/";//[[NSBundle mainBundle] resourcePath];
-    [self _refreshTables];
+    self.listDataOfDirectories = [self GetListOfDirectories:openedFolder];
+    self.listDataOfFiles = [self GetListOfFiles:openedFolder];
+    self.listDataOfAll = [self GetListOfAll:openedFolder];
     [super viewDidLoad];
 }
 
@@ -68,8 +71,9 @@
     self.tableView1 = nil;
     self.tableView2 = nil;
     self.tableView3 = nil;
-    self.listData1 = nil;
-    self.listData2 = nil;
+    self.listDataOfDirectories = nil;
+    self.listDataOfFiles = nil;
+    self.listDataOfAll = nil;
     self.openedFolder = nil;
     [super viewDidUnload];
 }
@@ -80,35 +84,61 @@
     [tableView1 release];
     [tableView2 release];
     [tableView3 release];
-    [listData1 release];
-    [listData2 release];
+    [listDataOfDirectories release];
+    [listDataOfFiles release];
+    [listDataOfAll release];
     [openedFolder release];
     [super dealloc];
 }
 
-- (void)_refreshTables {
+- (NSArray*) GetListOfDirectories:(NSString*)path {
+    NSMutableArray *lod = [self GetList:path Mode:1];
+    NSArray *reslod = [lod copy];
+    [lod release];
+    return reslod;
+}
+
+- (NSArray*) GetListOfFiles:(NSString*)path {
+    NSMutableArray *lof = [self GetList:path Mode:2];
+    NSArray *reslof = [lof copy];
+    [lof release];
+    return reslof;
+}
+
+- (NSArray*) GetListOfAll:(NSString*)path {
+    NSMutableArray *loa = [self GetList:path Mode:3];
+    NSArray *resloa = [loa copy];
+    [loa release];
+    return resloa;
+}
+
+//mode : 1-directoeies, 2-files, other-all
+- (NSMutableArray*) GetList:(NSString*)path Mode:(NSInteger)mode {
     NSError * error;
-    //NSArray * directoryContents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:openedFolder error:&error];  
-    
     NSURL * url = [[NSURL alloc] initWithString:openedFolder];
     NSArray * directoryContents = [ [NSFileManager defaultManager] contentsOfDirectoryAtURL:url includingPropertiesForKeys: [NSArray arrayWithObjects: NSURLCreationDateKey, NSURLNameKey, nil] options:0 error:&error ];
-    
     NSMutableArray *ld1 = [[NSMutableArray alloc] init];
     NSMutableArray *ld2 = [[NSMutableArray alloc] init];
     for (int i = 0; i < [directoryContents count]; i++) {
-        NSString *str = [[directoryContents objectAtIndex:i] path];
-        //NSRange res = [str rangeOfString:@"."];
-  //     if( ![[directoryContents objectAtIndex:i] ])
-            [ld1 addObject:str];
-        [ld2 addObject:str];
+        BOOL isDir;
+        [[NSFileManager defaultManager] fileExistsAtPath:[[directoryContents objectAtIndex:i] path] isDirectory:&isDir];
+        if(isDir)
+            [ld1 addObject:[[directoryContents objectAtIndex:i] lastPathComponent]];
+        else
+            [ld2 addObject:[[directoryContents objectAtIndex:i] lastPathComponent]];
     }
-    
-    self.listData1 = ld1;
-    self.listData2 = ld2;
-    [ld1 release];
+    [url release];
+    switch (mode) {
+        case 1:
+            [ld2 release];
+            return ld1;
+        case 2:
+            [ld1 release];
+            return ld2;
+    }
+    [ld1 addObjectsFromArray:ld2];
     [ld2 release];
-//    [url release];
-//    [directoryContents release];
+    return ld1;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -134,11 +164,10 @@
 #pragma mark -
 #pragma mark Table View Data Sourse Methods
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (tableView == self.tableView2) {
-        return [self.listData1 count];
-    } else{
-        return [self.listData2 count];
-    }
+    if (tableView == self.tableView2)
+        return [self.listDataOfDirectories count];
+    else
+        return [self.listDataOfAll count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -156,78 +185,40 @@
     if(tableView == self.tableView2) {
         UIImage *image = [UIImage imageNamed:@"Box.png"];
         cell.imageView.image = image;
-        cell.textLabel.text = [self.listData1 objectAtIndex:row];
-    } else {
-        cell.textLabel.text = [self.listData2 objectAtIndex:row];
-    }
+        cell.textLabel.text = [self.listDataOfDirectories objectAtIndex:row];
+    } else 
+        cell.textLabel.text = [self.listDataOfAll objectAtIndex:row];
     
     return cell;
-    
+}
+
+- (void)reloadTables {
+    self.listDataOfDirectories = [self GetListOfDirectories:openedFolder];
+    self.listDataOfFiles = [self GetListOfFiles:openedFolder];
+    self.listDataOfAll = [self GetListOfAll:openedFolder];
+    [tableView1 reloadData];
+    [tableView2 reloadData];
+    [tableView3 reloadData];
 }
 
 //will selected table item
 -(NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSUInteger row = [indexPath row];
     return indexPath;
 }
 
 //did selected table item
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *SimpleTableIdentifier =
-    @"SimpleTableIdentifier";
     NSUInteger row = [indexPath row];
-    
-    //NSString *rowValue = [listData objectAtIndex:row];
-    
-    //NSString *message = [[NSString alloc] initWithFormat:@"You selected %@", rowValue];
-    //UIAlertView *alert = [[UIAlertView alloc]
-    //                      initWithTitle:@"Row Selected!" message:message delegate:nil cancelButtonTitle:@"Yes I did"
-    //otherButtonTitles:nil];
-    //[alert show];
-    
-    UITableViewCell *cell = [tableView
-                             dequeueReusableCellWithIdentifier:SimpleTableIdentifier];
-    
-    NSMutableString *tmp = [[NSMutableString alloc] initWithCapacity:30];
-    [tmp appendString: openedFolder];
-    NSString *nn = [self.listData2 objectAtIndex:row];
-    [tmp appendString:nn];
-    [tmp appendString: @"/"];
-    
-    
-    //openedFolder = nil;
-    self.openedFolder = [tmp retain];
-    
-    [self _refreshTables];
-    
-    [tableView1 reloadData];
-    [tableView2 reloadData];
-    [tableView3 reloadData];
-    
+    if (tableView == tableView2)
+        self.openedFolder = [openedFolder stringByAppendingPathComponent:[self.listDataOfDirectories objectAtIndex:row]];
+    else
+        self.openedFolder = [openedFolder stringByAppendingPathComponent:[self.listDataOfAll objectAtIndex:row]];
+    [self reloadTables];
 }
 
 - (IBAction)backButtonPressed:(id)sender {
-    NSMutableString *tmp = [[NSMutableString alloc] init];
-    [tmp appendString:openedFolder];
-    NSInteger i = tmp.length - 1; 
-    
-    if(i <= 0)
-        return;
-    
-    while(i > -1) {
-        if([tmp characterAtIndex: --i] == '/')
-            break;
-    }
-    tmp = [tmp substringToIndex: i + 1];
-    
-    //openedFolder = nil;
-    self.openedFolder = [tmp retain];
-    
-    [self _refreshTables];
-    
-    [tableView1 reloadData];
-    [tableView2 reloadData];
-    [tableView3 reloadData];
+    self.openedFolder = [openedFolder stringByDeletingLastPathComponent];
+    [self reloadTables];
 }
 
 
