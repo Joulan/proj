@@ -160,7 +160,7 @@
 }
 
 - (void)restClient:(DBRestClient*)client loadedFile:(NSString*)localPath {
-    NSLog(@"File loaded into path: %@", localPath);
+//    NSLog(@"File loaded into path: %@", localPath);
     NSString *pth = localPath;
     NSString *content = [self.viewController GetContentOfFile:pth];
     NSData *datacontent = [Base64 decode:content];
@@ -171,7 +171,7 @@
 }
 
 - (void)restClient:(DBRestClient*)client loadFileFailedWithError:(NSError*)error {
-    NSLog(@"There was an error loading the file - %@", error);
+//    NSLog(@"There was an error loading the file - %@", error);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

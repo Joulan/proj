@@ -25,7 +25,8 @@
     UIBarButtonItem *changeBarButton2;
     UIBarButtonItem *linkBarButton1;
     UIBarButtonItem *linkBarButton2;
-    
+    UIBarButtonItem *sendBarButton1;
+    UIBarButtonItem *sendBarButton2;
     
     NSArray *listDataOfDirectories;
     NSArray *listDataOfFiles;
@@ -33,7 +34,10 @@
     
     NSString *openedFolder;
     
+    NSString *lastpath;
+    
     BOOL isFolIOS;
+    BOOL isSelecting;
     
 }
 
@@ -46,12 +50,16 @@
 @property (nonatomic, retain) IBOutlet UIBarButtonItem *changeBarButton2;
 @property (nonatomic, retain) IBOutlet UIBarButtonItem *linkBarButton1;
 @property (nonatomic, retain) IBOutlet UIBarButtonItem *linkBarButton2;
+@property (nonatomic, retain) IBOutlet UIBarButtonItem *sendBarButton1;
+@property (nonatomic, retain) IBOutlet UIBarButtonItem *sendBarButton2;
 @property (nonatomic, retain) NSArray *listDataOfDirectories;
 @property (nonatomic, retain) NSArray *listDataOfFiles;
 @property (nonatomic, retain) NSArray *listDataOfAll;
 @property (nonatomic, retain) NSString *openedFolder;
+@property (nonatomic, retain) NSString *lastpath;
 
 - (IBAction)backButtonPressed:(id)sender;
+- (IBAction)sendButtonPressed:(id)sender;
 - (IBAction)linkButtonPressed:(id)sender;
 - (IBAction)changeButtonPressed:(id)sender;
 

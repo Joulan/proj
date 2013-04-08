@@ -20,11 +20,12 @@
 @synthesize changeBarButton2;
 @synthesize linkBarButton1;
 @synthesize linkBarButton2;
+@synthesize sendBarButton1;
+@synthesize sendBarButton2;
 @synthesize listDataOfDirectories;
 @synthesize listDataOfFiles;
 @synthesize listDataOfAll;
 @synthesize openedFolder;
-
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration {
 //    CGRect screenRect = [[UIScreen mainScreen] applicationFrame];
@@ -246,11 +247,10 @@
             self.openedFolder = [openedFolder stringByAppendingPathComponent:[self.listDataOfAll objectAtIndex:row]];
         else {
             NSString *path = [openedFolder stringByAppendingPathComponent:[self.listDataOfAll objectAtIndex:row]];
-            if(isFolIOS) {
-                [self Uploading:path Destination:@"/"];
-            } else {
-                [self Downloading:path Destination:@"/Users/mac/Desktop/test.txtdbx"];
-            }
+            self.lastpath = path;
+            [self changeButtonPressed:nil];
+            self.changeBarButton1.enabled = changeBarButton2.enabled = 
+            self.linkBarButton1.enabled = linkBarButton2.enabled = FALSE;
         }
     }
     [self reloadTables];
@@ -296,6 +296,18 @@
         self.linkBarButton1.title = self.linkBarButton2.title = @"Unlink to DB";
     } else 
         self.linkBarButton1.title = self.linkBarButton2.title = @"Link to DB";
+}
+
+- (IBAction)sendButtonPressed:(id)sender {
+    if(isSelecting && !isFolIOS) {
+        [self Uploading:lastpath Destination:[openedFolder stringByAppendingPathComponent:[lastpath lastPathComponent]]];
+        self.changeBarButton1.enabled = changeBarButton2.enabled = 
+        self.linkBarButton1.enabled = linkBarButton2.enabled = TRUE;
+    } else if (isSelecting && isFolIOS) {
+        [self Downloading:lastpath Destination:[openedFolder stringByAppendingPathComponent:[lastpath lastPathComponent]]];
+        self.changeBarButton1.enabled = changeBarButton2.enabled = 
+        self.linkBarButton1.enabled = linkBarButton2.enabled = TRUE;
+    }
 }
 
 @end
