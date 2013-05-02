@@ -32,12 +32,7 @@
     NSArray *listDataOfFiles;
     NSArray *listDataOfAll;
     
-    NSString *openedFolder;
-    
-    NSString *lastpath;
-    
-    BOOL isFolIOS;
-    BOOL isSelecting;
+    AppDelegate *appdelegate;
     
 }
 
@@ -55,23 +50,11 @@
 @property (nonatomic, retain) NSArray *listDataOfDirectories;
 @property (nonatomic, retain) NSArray *listDataOfFiles;
 @property (nonatomic, retain) NSArray *listDataOfAll;
-@property (nonatomic, retain) NSString *openedFolder;
-@property (nonatomic, retain) NSString *lastpath;
+@property (nonatomic, retain) AppDelegate *appdelegate;
 
 - (IBAction)backButtonPressed:(id)sender;
 - (IBAction)sendButtonPressed:(id)sender;
 - (IBAction)linkButtonPressed:(id)sender;
 - (IBAction)changeButtonPressed:(id)sender;
-
-- (NSArray*) GetListOfDirectories:(NSString*)path;
-- (NSArray*) GetListOfFiles:(NSString*)path;- (NSArray*) GetListOfAll:(NSString*)path;
-- (NSMutableArray*) GetList:(NSString*)path Mode:(NSInteger)mode;
-- (void)reloadTables;
-
-- (NSString *)GetContentOfFile:(NSString *)path;
-- (void)SetContentOfFile:(NSString *)path Text:(NSString *)txt;
-
-- (void)Downloading:(NSString *)path Destination:(NSString *)dest;
-- (void)Uploading:(NSString *)path Destination:(NSString *)dest;
 
 @end

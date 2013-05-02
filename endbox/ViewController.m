@@ -25,8 +25,8 @@
 @synthesize listDataOfDirectories;
 @synthesize listDataOfFiles;
 @synthesize listDataOfAll;
-@synthesize openedFolder;
-@synthesize lastpath;
+@synthesize appdelegate;
+
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation duration:(NSTimeInterval)duration {
 //    CGRect screenRect = [[UIScreen mainScreen] applicationFrame];
@@ -34,22 +34,22 @@
         self.view = self.portrait;
         self.view.transform = CGAffineTransformIdentity;
         self.view.transform = CGAffineTransformMakeRotation(degreesToRadians(0));
-        self.view.bounds = CGRectMake(0.0, 0.0, 320.0, 460.0);
+        self.view.bounds = CGRectMake(0.0, 0.0, 740.0, 960.0);
     } else if (interfaceOrientation == UIInterfaceOrientationLandscapeLeft) {
         self.view = self.landscape;
         self.view.transform = CGAffineTransformIdentity;
         self.view.transform = CGAffineTransformMakeRotation(degreesToRadians(-90));
-        self.view.bounds = CGRectMake(0.0, 0.0, 480.0, 300.0);
+        self.view.bounds = CGRectMake(0.0, 0.0, 980.0, 720.0);
     } else if (interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown) {
         self.view = self.portrait;
         self.view.transform = CGAffineTransformIdentity;
         self.view.transform = CGAffineTransformMakeRotation(degreesToRadians(180));
-        self.view.bounds = CGRectMake(0.0, 0.0, 320.0, 460.0);
+        self.view.bounds = CGRectMake(0.0, 0.0, 740.0, 960.0);
     } else if (interfaceOrientation == UIInterfaceOrientationLandscapeRight) {
         self.view = self.landscape;
         self.view.transform = CGAffineTransformIdentity;
         self.view.transform = CGAffineTransformMakeRotation(degreesToRadians(90));
-        self.view.bounds = CGRectMake(0.0, 0.0, 480.0, 300.0);
+        self.view.bounds = CGRectMake(0.0, 0.0, 980.0, 720.0);
     }
 }
 
@@ -63,21 +63,33 @@
 
 #pragma mark - View lifecycle
 
-- (void)viewDidLoad
-{    
-    openedFolder = @"/";
-    isFolIOS = TRUE;
-    self.sendBarButton1.enabled = self.sendBarButton2.enabled = isSelecting = FALSE;
-    self.linkBarButton1.title = self.linkBarButton2.title = ([[DBSession sharedSession] isLinked]) ? @"Unlink DB" : @"Link to DB";
-    self.changeBarButton1.title = self.changeBarButton2.title = (isFolIOS) ? @"To DB" : @"To IOS";
-    self.listDataOfDirectories = [self GetListOfDirectories:openedFolder];
-    self.listDataOfFiles = [self GetListOfFiles:openedFolder];
-    self.listDataOfAll = [self GetListOfAll:openedFolder];
+- (void)viewDidLoad {    
     [super viewDidLoad];
+    self.appdelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    self.listDataOfDirectories = [appdelegate GetListOfDirectories:appdelegate.openedFolder];
+    self.listDataOfFiles = [appdelegate GetListOfFiles:appdelegate.openedFolder];
+    self.listDataOfAll = [appdelegate GetListOfAll:appdelegate.openedFolder];
+    
+    self.tableView1.rowHeight = self.tableView2.rowHeight = self.tableView3.rowHeight = 40;
+    self.tableView1.separatorStyle = self.tableView2.separatorStyle = self.tableView3.separatorStyle = UITableViewCellSeparatorStyleNone;
+	self.tableView1.backgroundColor = self.tableView2.backgroundColor = self.tableView3.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"gradientBackground.png"]];
+    self.linkBarButton1.title = self.linkBarButton2.title = @"Unlink to DB";
+    [self linkButtonPressed:nil];
+    
+    UIView *containerView = [[[UIView alloc] initWithFrame:CGRectMake(0, 0, 300, 30)] autorelease];
+	UILabel *headerLabel = [[[UILabel alloc] initWithFrame:CGRectMake(10, 5, 300, 20)] autorelease];
+	headerLabel.text = @"DBEncode";
+	headerLabel.textColor = [UIColor whiteColor];
+	headerLabel.shadowColor = [UIColor blackColor];
+	headerLabel.shadowOffset = CGSizeMake(0, 1);
+	headerLabel.font = [UIFont boldSystemFontOfSize:20];
+	headerLabel.backgroundColor = [UIColor clearColor];
+	[containerView addSubview:headerLabel];
+	self.tableView1.tableHeaderView = self.tableView2.tableHeaderView = self.tableView3.tableHeaderView = containerView;
+
 }
 
-- (void)viewDidUnload
-{
+- (void)viewDidUnload {
     self.portrait = nil;
     self.landscape = nil;
     self.tableView1 = nil;
@@ -92,8 +104,6 @@
     self.listDataOfDirectories = nil;
     self.listDataOfFiles = nil;
     self.listDataOfAll = nil;
-    self.openedFolder = nil;
-    self.lastpath = nil;
     [super viewDidUnload];
 }
 
@@ -112,90 +122,22 @@
     [listDataOfDirectories release];
     [listDataOfFiles release];
     [listDataOfAll release];
-    [openedFolder release];
     [super dealloc];
 }
 
-- (NSArray*) GetListOfDirectories:(NSString*)path {
-    NSMutableArray *lod = [self GetList:path Mode:1];
-    NSArray *reslod = [lod copy];
-    [lod release];
-    return reslod;
-}
-
-- (NSArray*) GetListOfFiles:(NSString*)path {
-    NSMutableArray *lof = [self GetList:path Mode:2];
-    NSArray *reslof = [lof copy];
-    [lof release];
-    return reslof;
-}
-
-- (NSArray*) GetListOfAll:(NSString*)path {
-    NSMutableArray *loa = [self GetList:path Mode:3];
-    NSArray *resloa = [loa copy];
-    [loa release];
-    return resloa;
-}
-
-//mode : 1-directoeies, 2-files, other-all
-- (NSMutableArray*) GetList:(NSString*)path Mode:(NSInteger)mode {
-    NSError * error;
-    NSURL * url = [[NSURL alloc] initWithString:openedFolder];
-    if(url == nil)
-        return nil;
-    NSArray * directoryContents = [ [NSFileManager defaultManager] contentsOfDirectoryAtURL:url includingPropertiesForKeys: [NSArray arrayWithObjects: NSURLCreationDateKey, NSURLNameKey, nil] options:0 error:&error ];
-    NSMutableArray *ld1 = [[NSMutableArray alloc] init];
-    NSMutableArray *ld2 = [[NSMutableArray alloc] init];
-    for (int i = 0; i < [directoryContents count]; i++) {
-        BOOL isDir;
-        [[NSFileManager defaultManager] fileExistsAtPath:[[directoryContents objectAtIndex:i] path] isDirectory:&isDir];
-        if(isDir)
-            [ld1 addObject:[[directoryContents objectAtIndex:i] lastPathComponent]];
-        else
-            [ld2 addObject:[[directoryContents objectAtIndex:i] lastPathComponent]];
-    }
-    [url release];
-    switch (mode) {
-        case 1:
-            [ld2 release];
-            return ld1;
-        case 2:
-            [ld1 release];
-            return ld2;
-    }
-    [ld1 addObjectsFromArray:ld2];
-    [ld2 release];
-    return ld1;
-}
-
-- (NSString *)GetContentOfFile:(NSString *)path {
-    NSError *error;
-    NSString *text = [[NSString alloc] initWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&error];
-    return text;
-}
-
-- (void)SetContentOfFile:(NSString *)path Text:(NSString *)txt {
-    NSError *error;
-    [txt writeToFile:path atomically:YES encoding:NSUTF8StringEncoding error:&error];
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 }
 
-- (void)viewDidAppear:(BOOL)animated
-{
+- (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 }
 
-- (void)viewWillDisappear:(BOOL)animated
-{
+- (void)viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
 }
 
-- (void)viewDidDisappear:(BOOL)animated
-{
+- (void)viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];
 }
 
@@ -212,39 +154,123 @@
     static NSString *SimpleTableIdentifier =
     @"SimpleTableIdentifier";
     
+    UILabel *topLabel;
+    UILabel *bottomLabel;
+    
     UITableViewCell *cell = [tableView
                              dequeueReusableCellWithIdentifier:SimpleTableIdentifier];
     if(cell == nil) {
         cell = [[[UITableViewCell alloc]
                  initWithStyle:UITableViewCellStyleDefault
                  reuseIdentifier:SimpleTableIdentifier] autorelease];
+
+        //Помещение картинки indicator.png в accessoryView
+        UIImage *indicatorImage = [UIImage imageNamed:@"indicator.png"];
+        cell.accessoryView = [[[UIImageView alloc] initWithImage:indicatorImage] autorelease];
+        
+        //Создание константы для хранения высоты надписей
+        const CGFloat LABEL_HEIGHT = 20;
+        //Получение картинки Folder.png (она нужна будет для получения размеров этой картинки)
+        UIImage *image = [UIImage imageNamed:@"Folder.png"];
+        
+        //Инициализация верхней надписи
+        CGRect topLabelFrame = CGRectMake(60, //image.size.width + 1.0 * cell.indentationWidth, 
+                                          5,//0.5 * (tableView.rowHeight - 2 * LABEL_HEIGHT), 
+                                          tableView.bounds.size.width - image.size.width - 
+                                          4.0 * cell.indentationWidth - indicatorImage.size.width, 
+                                          LABEL_HEIGHT);
+        //CGRect topLabelFrame = CGRectMake(30, 30, 290, LABEL_HEIGHT);
+        
+        topLabel = [[[UILabel alloc] initWithFrame:topLabelFrame] autorelease];
+        [cell.contentView addSubview:topLabel];
+        
+        //установка значений для верхней надписи
+        topLabel.tag = 1;
+        topLabel.backgroundColor = [UIColor clearColor];
+        topLabel.textColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:1.0];
+        topLabel.highlightedTextColor = [UIColor colorWithRed:1.0 green:1.0 blue:0.9 alpha:1.0];
+        topLabel.font = [UIFont systemFontOfSize:[UIFont labelFontSize]];
+        
+        //Инициализация нижней надписи
+        CGRect bottomLabelFrame = CGRectMake(80,//image.size.width + 2.0 * cell.indentationWidth,
+                                             0.5 * (tableView.rowHeight - 2 * LABEL_HEIGHT) + LABEL_HEIGHT, 
+                                             tableView.bounds.size.width - image.size.width - 
+                                             4.0 * cell.indentationWidth - indicatorImage.size.width, 
+                                             LABEL_HEIGHT);
+        bottomLabel = [[[UILabel alloc] initWithFrame:bottomLabelFrame] autorelease];
+        [cell.contentView addSubview:bottomLabel];
+        
+        //установка значений для нижней надписи
+        bottomLabel.tag = 2;
+        bottomLabel.backgroundColor = [UIColor clearColor];
+        bottomLabel.textColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:1.0];
+        bottomLabel.highlightedTextColor = [UIColor colorWithRed:1.0 green:1.0 blue:0.9 alpha:1.0];
+        bottomLabel.font = [UIFont systemFontOfSize:[UIFont labelFontSize] - 2];
+        
+        //инициализация фонов
+        cell.backgroundView = [[UIImageView new] autorelease];
+        cell.selectedBackgroundView = [[UIImageView new] autorelease];
+        
+    } else {
+        //получение надписей по тэгу
+        topLabel = (UILabel *)[cell viewWithTag:1];
+        bottomLabel = (UILabel *)[cell viewWithTag:2];
     }
-    NSUInteger row = [indexPath row];
+    
     if(tableView == self.tableView2) {
         cell.imageView.image = [UIImage imageNamed:@"Folder.png"];
-        cell.textLabel.text = [self.listDataOfDirectories objectAtIndex:row];
-    } else 
-        if([self.listDataOfDirectories containsObject:[self.listDataOfAll objectAtIndex:row]])
-            cell.imageView.image = [UIImage imageNamed:@"Folder.png"];
-        else
-            cell.imageView.image = [UIImage imageNamed:@"File.png"];
-        cell.textLabel.text = [self.listDataOfAll objectAtIndex:row];
-    
-    return cell;
-}
-
-- (void)reloadTables {
-    if (isFolIOS) {
-        self.listDataOfDirectories = [self GetListOfDirectories:openedFolder];
-        self.listDataOfFiles = [self GetListOfFiles:openedFolder];
-        self.listDataOfAll = [self GetListOfAll:openedFolder];
-        [tableView1 reloadData];
-        [tableView2 reloadData];
-        [tableView3 reloadData];
+        topLabel.text = [self.listDataOfDirectories objectAtIndex:indexPath.row];
+        bottomLabel.text = @"folder";
+        cell.accessoryType = UITableViewCellAccessoryNone;
     } else {
-        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        [appDelegate GetList:openedFolder];
+        if([self.listDataOfDirectories containsObject:[self.listDataOfAll objectAtIndex:indexPath.row]]) {
+            cell.imageView.image = [UIImage imageNamed:@"Folder.png"];
+            bottomLabel.text = @"folder";
+            cell.accessoryType = UITableViewCellAccessoryNone;
+        } else {
+            cell.imageView.image = [UIImage imageNamed:@"File.png"];
+            bottomLabel.text = @"file";
+        }
+        topLabel.text = [self.listDataOfAll objectAtIndex:indexPath.row];
     }
+    
+    
+    //создание картинок которые будем помещать в ячейки
+	UIImage *rowBackground;
+	UIImage *selectionBackground;
+	NSInteger sectionRows = [tableView numberOfRowsInSection:[indexPath section]];
+    NSUInteger row = [indexPath row];
+    
+    if (row == 0 && row == sectionRows - 1) {
+        //Если ячейка одна в группе - устанавилваем ей картинку со всеми закругленными углами
+		rowBackground = [UIImage imageNamed:@"topAndBottomRow.png"];
+		selectionBackground = [UIImage imageNamed:@"topAndBottomRowSelected.png"];
+	}
+	else if (row == 0) {
+        //для первой ячейки в группе - устанавливаем картинку с верхними закругленными углами
+		rowBackground = [UIImage imageNamed:@"topRow.png"];
+		selectionBackground = [UIImage imageNamed:@"topRowSelected.png"];
+	}
+	else if (row == sectionRows - 1) {
+        //всем ячейкам, которые в середине группы устанавливаем картинки без закругленных углов
+		rowBackground = [UIImage imageNamed:@"bottomRow.png"];
+		selectionBackground = [UIImage imageNamed:@"bottomRowSelected.png"];
+	}
+	else {
+        //последней ячейке устанавливаем картинку с закругленными нижними углами
+		rowBackground = [UIImage imageNamed:@"middleRow.png"];
+		selectionBackground = [UIImage imageNamed:@"middleRowSelected.png"];
+	}
+    
+    //установка картинок
+    if ([self.appdelegate.toSending containsObject:[self.listDataOfAll objectAtIndex:row]])
+        ((UIImageView *)cell.backgroundView).image = selectionBackground;
+    else
+        ((UIImageView *)cell.backgroundView).image = rowBackground;
+	((UIImageView *)cell.selectedBackgroundView).image = selectionBackground;
+
+
+    return cell;
 }
 
 //will selected table item
@@ -254,83 +280,35 @@
 
 //did selected table item
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSUInteger row = [indexPath row];
-    if (tableView == tableView2)
-        self.openedFolder = [openedFolder stringByAppendingPathComponent:[self.listDataOfDirectories objectAtIndex:row]];
-    else {
-        if([self.listDataOfDirectories containsObject:[self.listDataOfAll objectAtIndex:row]])
-            self.openedFolder = [openedFolder stringByAppendingPathComponent:[self.listDataOfAll objectAtIndex:row]];
-        else {
-            NSString *path = [openedFolder stringByAppendingPathComponent:[self.listDataOfAll objectAtIndex:row]];
-            self.lastpath = path;
-            [self changeButtonPressed:nil];
-            self.changeBarButton1.enabled = changeBarButton2.enabled = 
-            self.linkBarButton1.enabled = linkBarButton2.enabled = FALSE;
-            self.sendBarButton1.enabled = self.sendBarButton2.enabled = isSelecting = TRUE;
-        }
-    }
-    [self reloadTables];
-}
-
-- (void)Downloading:(NSString *)path Destination:(NSString *)dest {
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate downloadFile:path Destination:dest];
-}
-
-- (void)Uploading:(NSString *)path Destination:(NSString *)dest {
-    NSString *pth = path;
-    NSString *dst = dest;
-    
-    NSData *datacontent = [[NSData alloc] initWithContentsOfFile:pth];
-    NSString *result = [Base64 encode:datacontent];
-    
-    pth = [pth stringByAppendingString:@"dbx"];
-    //dst = dest;
-    
-    [self SetContentOfFile:pth Text:result];
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate uploadFile:pth Destination:dst];
+    [self.appdelegate RowSelected:tableView AtIndexPath:indexPath];
 }
 
 - (IBAction)backButtonPressed:(id)sender {
-    self.openedFolder = [openedFolder stringByDeletingLastPathComponent];
-    [self reloadTables];
+    [self.appdelegate BackSelected];
+    //NSLog(@"%@",[[DBSession sharedSession] userIds]);
 }
 
 - (IBAction)changeButtonPressed:(id)sender {
-    if (![[DBSession sharedSession] isLinked])
-        return;
-    self.openedFolder = @"/";
-    isFolIOS = !isFolIOS;
-    [self reloadTables];
-    if(isFolIOS)
-        self.changeBarButton1.title = self.changeBarButton1.title = @"To DB";
-    else
-        self.changeBarButton1.title = self.changeBarButton1.title = @"To IOS";
+    [self.appdelegate ChangeFileSystem];
 }
 
 - (IBAction)linkButtonPressed:(id)sender {
+    if (self.appdelegate.netStatus == NotReachable)
+        return;
     if (![[DBSession sharedSession] isLinked]) {
         [[DBSession sharedSession] linkFromController:self];
-        self.linkBarButton1.title = self.linkBarButton2.title = @"Unlink to DB";
-    } else 
+        if ([[DBSession sharedSession] isLinked])
+            self.linkBarButton1.title = self.linkBarButton2.title = @"Unlink to DB";
+        else
+            self.linkBarButton1.title = self.linkBarButton2.title = @"Link to DB";
+    } else {
+        [[DBSession sharedSession] unlinkAll];
         self.linkBarButton1.title = self.linkBarButton2.title = @"Link to DB";
+    }
 }
 
 - (IBAction)sendButtonPressed:(id)sender {
-    if(isSelecting && !isFolIOS) {
-        [self Uploading:lastpath Destination:openedFolder];
-        self.changeBarButton1.enabled = changeBarButton2.enabled = 
-        self.linkBarButton1.enabled = linkBarButton2.enabled = TRUE;
-        self.sendBarButton1.enabled = self.sendBarButton2.enabled = isSelecting = FALSE;
-        //[self reloadTables];
-    } else if (isSelecting && isFolIOS) {
-        [self Downloading:lastpath Destination:[openedFolder stringByAppendingPathComponent:[lastpath lastPathComponent]]];
-        self.changeBarButton1.enabled = changeBarButton2.enabled = 
-        self.linkBarButton1.enabled = linkBarButton2.enabled = TRUE;
-        self.sendBarButton1.enabled = self.sendBarButton2.enabled = isSelecting = FALSE;
-        //[self reloadTables];
-    }
+    [self.appdelegate SendFiles];
 }
 
 @end
